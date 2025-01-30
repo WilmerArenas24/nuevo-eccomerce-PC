@@ -24,11 +24,11 @@ public class ProductoControlador {
     @Autowired
     private IProductoServicio productoServicio;
 
-    @GetMapping("/products")
+    @GetMapping("/productos")
     public List<Producto> obteberProductos(){
         var productos = productoServicio.listarProductos();
 
-        //Imorimeindo en consola
+        //Imprimiendo en consola
         productos.forEach((producto -> logger.info(producto.toString())));
 
         return productos;

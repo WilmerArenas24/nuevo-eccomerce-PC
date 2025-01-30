@@ -1,6 +1,5 @@
 package wd.tienda_on_pc.service.impl;
 
-import org.springframework.security.core.parameters.P;
 import wd.tienda_on_pc.entity.Producto;
 
 import java.util.List;
