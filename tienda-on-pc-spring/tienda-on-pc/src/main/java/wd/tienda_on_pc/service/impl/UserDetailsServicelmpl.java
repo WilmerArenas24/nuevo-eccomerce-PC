@@ -9,8 +9,6 @@ import wd.tienda_on_pc.entity.SecurityUser;
 import wd.tienda_on_pc.entity.User;
 import wd.tienda_on_pc.repository.UserRepository;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServicelmpl implements UserDetailsService {
@@ -20,12 +18,8 @@ public class UserDetailsServicelmpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Recuperar el usuario usando Optional
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
-        // Verificar si el usuario existe
-        User user = userOptional.orElseThrow(() ->
-                new UsernameNotFoundException("Usuario no encontrado: " + username)
-        );
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
         // Devolver un SecurityUser (implementación de UserDetails)
         return new SecurityUser(user);
