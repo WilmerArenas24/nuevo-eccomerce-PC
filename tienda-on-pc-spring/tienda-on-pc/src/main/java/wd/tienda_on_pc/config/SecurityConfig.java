@@ -1,9 +1,7 @@
 package wd.tienda_on_pc.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,24 +12,37 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
-
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/v1/home").authenticated()
-                        .requestMatchers("/v1/admin").hasAnyAuthority("ADMIN").anyRequest().authenticated()
+                .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF (opcional para APIs RESTful)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/public/**").permitAll() // Rutas públicas
+                        .requestMatchers("/v1/home").authenticated() // Ruta protegida
+                        .requestMatchers("/v1/admin").hasAuthority("ADMIN") // Solo para ADMIN
+                        .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(formLogin -> formLogin
+                        .defaultSuccessUrl("/v1/home", true) // Redirección después de login exitoso
+                        .permitAll() // Permitir acceso al formulario de login por defecto
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // URL de logout
+                        .logoutSuccessUrl("/login?logout") // Redirección después de logout
+                        .invalidateHttpSession(true) // Invalidar la sesión
+                        .deleteCookies("JSESSIONID") // Eliminar cookies
+                        .permitAll() // Permitir acceso a la funcionalidad de logout
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedPage("/access-denied") // Página personalizada para acceso denegado (opcional)
+                )
                 .build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +17,7 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        // Asigna el rol del usuario como una autoridad
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
     }
 
@@ -29,5 +29,29 @@ public class SecurityUser implements UserDetails {
     @Override
     public String getUsername() {
         return user.getUsername();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        // Devuelve true si la cuenta no ha expirado
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        // Devuelve true si la cuenta no está bloqueada
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // Devuelve true si las credenciales no han expirado
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        // Devuelve true si la cuenta está habilitada
+        return true;
     }
 }
