@@ -23,7 +23,4 @@ public class Producto {
     Double price;
     Integer stock;
     Integer category_id;
-
-
-
 }
